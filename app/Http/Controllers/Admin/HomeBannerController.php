@@ -81,7 +81,7 @@ class HomeBannerController extends Controller
            $image->storeAs('/public/media/home_banner',$image_name);
 
        }
-       $record=homebanner::insert(['btn_txt'=>$btn_txt,'btn_link'=>$btn_link,'image'=>$image]);
+       $record=homebanner::insert(['btn_txt'=>$btn_txt,'btn_link'=>$btn_link,'image'=>$image_name]);
 
        if($record)
        {

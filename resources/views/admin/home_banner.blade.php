@@ -41,7 +41,7 @@
                                           @endphp
                                               <td>{{$i}}</td>
                                                 <td>{{$value->btn_txt}}</td>
-                                                 <td><img src="{{asset('storage/media/home_banner')}}/{{$value->image}}" alt=""></td>
+                                                 <td><a target="_blank" href="{{asset('storage/media/home_banner')}}/{{$value->image}}"><img width="50px"   src="{{asset('storage/media/home_banner')}}/{{$value->image}}" alt=""></a></td>
                                                  @if($value->status==1)
                                                 <td><a href="{{url('admin/home_banner/manage_home_banner')}}/{{$value->id}}/status/0"  class="btn btn-success btn-sm">Active</a></td>
                                                 @else

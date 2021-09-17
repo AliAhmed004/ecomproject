@@ -24,7 +24,7 @@ class categoryController extends Controller
             $cat['cat_name']=$cat->cat_name;
             $cat['cat_slug']=$cat->cat_slug;
             $cat['cat_img']=$cat->cat_image;
-            $cat['is_header']=($cat->is_header==0) ? '' : 'checked';
+            $cat['is_home']=($cat->is_home==0) ? '' : 'checked';
             $parent_cat_id=DB::table('categories')->select('parent_cat_id')->where('id',$id)->first();
             $cat['parent_cat_id']=$parent_cat_id->parent_cat_id;
            
@@ -36,7 +36,7 @@ class categoryController extends Controller
             $cat['cat_slug']='';
             $cat['cat_img']='';
             $cat['parent_cat_id']='';
-            $cat['is_header']='';
+            $cat['is_home']='';
             
             
 
@@ -65,13 +65,13 @@ class categoryController extends Controller
          $update_cat->cat_name=$r->input('categoryName');
          $update_cat->cat_slug=$r->input('categorySlug');
          $update_cat->parent_cat_id=$r->input('parent_cat');
-         if($r->input('is_header')==null)
+         if($r->input('is_home')==null)
          {
-            $update_cat->is_header=0;
+            $update_cat->is_home=0;
          }
          else
          {
-            $update_cat->is_header=1;
+            $update_cat->is_home=1;
          }
          if($r->hasfile('cat_img'))
        {
@@ -103,15 +103,15 @@ class categoryController extends Controller
            $image->storeAs('/public/media/categories',$image_name);
 
        }
-       if($r->input('is_header')==null)
+       if($r->input('is_home')==null)
        {
-        $is_header=0;
+        $is_home=0;
        }
        else
        {
-        $is_header=1;
+        $is_home=1;
        }
-       $record=category::insert(['cat_name'=>$category,'cat_slug'=>$slug,'parent_cat_id'=>$parent_cat_id,'cat_image'=>$image_name,'is_header'=>$is_header]);
+       $record=category::insert(['cat_name'=>$category,'cat_slug'=>$slug,'parent_cat_id'=>$parent_cat_id,'cat_image'=>$image_name,'is_home'=>$is_home]);
 
        if($record)
        {

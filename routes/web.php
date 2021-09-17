@@ -13,7 +13,7 @@ use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\HomeBannerController;
 
 
-use App\Http\Controllers\Front\HomeController;
+use App\Http\Controllers\Front\FrontController;
 
 
 /*
@@ -93,8 +93,7 @@ Route::group(['middleware'=>'admin_auth'], function () {
     Route::get('admin/home_banner/manage_home_banner/{id?}',[HomeBannerController::class,'manage_home_banner']);
     Route::post('admin/home_banner/manage_home_banner',[HomeBannerController::class,'manage_home_banner_process']);
     Route::get('admin/home_banner/manage_home_banner/{id}/status/{status_value}',[HomeBannerController::class,'status']);
-    
-    Route::get('admin/home_banner/delete_home_banner/{id}',[HomeBannerController::class,'delete_home_banner']);
+   Route::get('admin/home_banner/delete_home_banner/{id}',[HomeBannerController::class,'delete_home_banner']);
    
      //------------ admin logout------------
 Route::get('/logout',[AdminController::class,'admin_logout']);
@@ -104,7 +103,10 @@ Route::get('/logout',[AdminController::class,'admin_logout']);
 
 
 //------------ Front-Home-Page------------
-Route::get('/',[HomeController::class,'index']);
+Route::get('/',[FrontController::class,'index']);
+
+Route::get('/product/{slug}',[FrontController::class,'product']);
+
 
 
 
