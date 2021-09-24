@@ -31,20 +31,16 @@
                   <div class="aa-product-view-slider">                                
                     <div id="demo-1" class="simpleLens-gallery-container">
                       <div class="simpleLens-container">
-                        <div class="simpleLens-big-image-container"><a data-lens-image="{{asset('storage/media')}}/{{$product[0]->image}}" class="simpleLens-lens-image">
-                        <img src="{{asset('storage/media')}}/{{$product[0]->image}}" class="simpleLens-big-image">
-                    </a></div>
+                        <div class="simpleLens-big-image-container">
+                          <a href="javascript:void(0)" data-lens-image="{{asset('storage/media')}}/{{$product[0]->image}}" class="simpleLens-lens-image">
+                          <img src="{{asset('storage/media')}}/{{$product[0]->image}}" class="simpleLens-big-image"></a></div>
                       </div>
                       <div class="simpleLens-thumbnails-container">
-                          <a data-big-image="img/view-slider/medium/polo-shirt-1.png" data-lens-image="img/view-slider/large/polo-shirt-1.png" class="simpleLens-thumbnail-wrapper" href="#">
-                            <img src="img/view-slider/thumbnail/polo-shirt-1.png">
+                        @foreach($thubmnail_images as $imgs)
+                          <a data-big-image="{{asset('storage/media/product_images')}}/{{$imgs->image}}" data-lens-image="{{asset('storage/media/product_images')}}/{{$imgs->image}}" class="simpleLens-thumbnail-wrapper" href="javascript:void(0)">
+                            <img width="50px" height="50px" src="{{asset('storage/media/product_images')}}/{{$imgs->image}}">
                           </a>                                    
-                          <a data-big-image="img/view-slider/medium/polo-shirt-3.png" data-lens-image="img/view-slider/large/polo-shirt-3.png" class="simpleLens-thumbnail-wrapper" href="#">
-                            <img src="img/view-slider/thumbnail/polo-shirt-3.png">
-                          </a>
-                          <a data-big-image="img/view-slider/medium/polo-shirt-4.png" data-lens-image="img/view-slider/large/polo-shirt-4.png" class="simpleLens-thumbnail-wrapper" href="#">
-                            <img src="img/view-slider/thumbnail/polo-shirt-4.png">
-                          </a>
+                          @endforeach
                       </div>
                     </div>
                   </div>
@@ -57,42 +53,54 @@
                       <span class="aa-product-view-price">${{$product_attributes[0]->price}}</span>
                       <!-- <p class="aa-product-avilability">Avilability: <span>In stock</span></p> -->
                     </div>
+                    <div>
+                      <input type="hidden" name="" id="products_id" value="{{$product[0]->id}}">
+                    </div>
+                    <?php
+                    foreach($product_attributes as $attribute)
+                    {
+                      $sizes[]=$attribute->size;
+                    }
+                    $unique_sizes=array_unique($sizes);
+                    
+                    ?>
+                    
                     <p>{{$product[0]->desc}}</p>
-                     @if($product_attributes[0]->size!='')
+                     @if($unique_sizes!='')
                     <h4>Size</h4>
                     <div class="aa-prod-view-size">
-                        @foreach($product_attributes as $attribute)
-                          <a href="{{$attribute->id}}">{{$attribute->size}}</a>
+                        @foreach($unique_sizes as $sizes)
+                          <a href="javascript:void(0)"  size_variant={{$sizes}} >{{$sizes}}</a>
                       @endforeach
                     </div>
                     @endif
-                    @if($product_attributes[0]->color!='')
+                    @if(!$product_attributes->isEmpty())
                     <h4>Color</h4>
                     <div class="aa-color-tag">
                     @foreach($product_attributes as $attribute)
-                      <a href="{{$attribute->id}}" class="aa-color-green" style="border:1px solid black;color: black; background-color:{{$attribute->color}}"></a>
+                      <a href="{{$attribute->id}}" color="{{$attribute->color}}" sizes="{{$attribute->size}}" product-attr-img="{{$attribute->image}}" class="aa-color-green" style="border:1px solid black;color: black; background-color:{{$attribute->color}}"></a>
                     @endforeach                     
                     </div>
                     @endif
                     <div class="aa-prod-quantity">
                       <form action="">
-                        <select id="" name="">
+                        <select id="quantity" name="">
                           <option selected="1" value="0">1</option>
-                          <option value="1">2</option>
-                          <option value="2">3</option>
-                          <option value="3">4</option>
-                          <option value="4">5</option>
-                          <option value="5">6</option>
+                          @for($i=1; $i < 11; $i++)
+                          <option   value="{{$i}}">{{$i}}</option>
+                          @endfor
                         </select>
+                        
                       </form>
                       <p class="aa-prod-category">
                         Category: <a href="#">Polo T-Shirt</a>
                       </p>
                     </div>
                     <div class="aa-prod-view-bottom">
-                      <a class="aa-add-to-cart-btn" href="#">Add To Cart</a>
+                      <a class="aa-add-to-cart-btn atc" href="#">Add To Cart</a>
                       <a class="aa-add-to-cart-btn" href="#">Wishlist</a>
                       <a class="aa-add-to-cart-btn" href="#">Compare</a>
+                      <div class="in_case" ></div>
                     </div>
                   </div>
                 </div>
@@ -315,4 +323,13 @@
     </div>
   </section>
   <!-- / product category -->
+
+  <!-- Add to cart -->
+  <form id="atc_form" action="" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="size_name" class="size_name" value="">
+  <input type="hidden" name="color_name" class="color_name" value="">
+  <input type="hidden" name="product_qty" class="product_qty" value="">
+  <input type="hidden" name="product_ids" class="product_cart_id" value="">
+  @csrf
+  </form>
   @endsection

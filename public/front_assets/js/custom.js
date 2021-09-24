@@ -50,13 +50,13 @@ jQuery(function($){
   /*  3. PRODUCT VIEW SLIDER 
   /* ----------------------------------------------------------- */    
 
-    jQuery('#demo-1 .simpleLens-thumbnails-container img').simpleGallery({
-        loading_image: 'demo/images/loading.gif'
-    });
+    // jQuery('#demo-1 .simpleLens-thumbnails-container img').simpleGallery({
+    //     loading_image: 'demo/images/loading.gif'
+    // });
 
-    jQuery('#demo-1 .simpleLens-big-image').simpleLens({
-        loading_image: 'demo/images/loading.gif'
-    });
+    // jQuery('#demo-1 .simpleLens-big-image').simpleLens({
+    //     loading_image: 'demo/images/loading.gif'
+    // });
 
   /* ----------------------------------------------------------- */
   /*  4. POPULAR PRODUCT SLIDER (SLICK SLIDER)
@@ -357,3 +357,73 @@ jQuery(function($){
     
 });
 
+
+$(document).ready(function(){
+ 
+// Slider image change
+
+  $(".simpleLens-thumbnails-container img").click(function(){
+    var img_src = $(this).attr('src');
+       $('.simpleLens-container .simpleLens-big-image-container a').attr('data-lens-image',img_src);
+       $('.simpleLens-container .simpleLens-big-image-container a img').attr('src',img_src);
+   });
+
+  $('.aa-color-tag a').click(function(e){
+    e.preventDefault();
+    $('.in_case .incase_color').remove();
+    $('.color_name').val($(this).attr('color'));
+    $('.aa-color-tag a').removeClass('clicked');
+   var img_path= $(this).attr('product-attr-img');
+   $('.simpleLens-container .simpleLens-big-image-container a').attr('data-lens-image','http://127.0.0.1:8000/storage/media/product_attributes/'+img_path);
+   $('.simpleLens-container .simpleLens-big-image-container a img').attr('src','http://127.0.0.1:8000/storage/media/product_attributes/'+img_path);
+   $(this).addClass('clicked');  
+  })
+//  End Slider image change
+
+// Showing colors on the bases of Sizes
+$('.aa-prod-view-size a').click(function(e){
+  e.preventDefault();
+  $('.in_case .incase_size').remove();
+  // $('.aa-color-tag a').removeClass('clicked');
+  $('.aa-prod-view-size a').removeClass('clicked');
+  var size=$(this).attr('size_variant');
+   $('.size_name').val(size);
+   $('.color_name').val('');
+  $('.aa-color-tag a').hide();
+  $(this).addClass('clicked');
+  $('.aa-color-tag [sizes='+size+']').show();
+})
+
+//Add to Cart
+
+$(document).on('click','.atc',function(e){
+  e.preventDefault();
+
+  if($('.size_name').val()=='')
+  {
+    $('.in_case').html('<div class="alert alert-danger mt-5 incase_size" role="alert">Please Select the Size</div>');
+   return false
+  }
+  else if($('.color_name').val()=='')
+  {
+    $('.in_case').html('<div class="alert alert-danger mt-5 incase_color" role="alert">Please Select the Color</div>');
+  }
+   else
+   {
+    var qty =$('#atc_form .product_qty').attr('value',$('#quantity').val());
+    var product_id =$('#atc_form .product_cart_id').attr('value',$('#products_id').val());
+  
+     $.ajax({
+      
+       url:'/add_to_cart',
+       data:$('#atc_form').serialize(),
+       dataType:"json",
+       success: function(response){
+        alert('product '+response.status);
+       }
+   
+      })
+   }
+})
+
+}) // End Document ready

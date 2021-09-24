@@ -9,7 +9,7 @@
     <link href="{{asset('front_assets/css/bootstrap.css')}}" rel="stylesheet">   
     <link href="{{asset('front_assets/css/jquery.smartmenus.bootstrap.css')}}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{asset('front_assets/css/jquery.simpleLens.css')}}">    
-    <link rel="stylesheet" type="text/css" href="{{asset('front_assets/css/slick.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('front_assets/css/slick.css')}}"> -->
     <link rel="stylesheet" type="text/css" href="{{asset('front_assets/css/nouislider.css')}}">
     <link id="switcher" href="{{asset('front_assets/css/theme-color/default-theme.css')}}" rel="stylesheet">
     <link href="{{asset('front_assets/css/sequence-theme.modern-slide-in.css')}}" rel="stylesheet" media="all">

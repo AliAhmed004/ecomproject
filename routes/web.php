@@ -102,10 +102,11 @@ Route::get('/logout',[AdminController::class,'admin_logout']);
 
 
 
-//------------ Front-Home-Page------------
+//------------ Front-Routes------------
 Route::get('/',[FrontController::class,'index']);
 
 Route::get('/product/{slug}',[FrontController::class,'product']);
+Route::get('/add_to_cart',[FrontController::class,'add_to_cart']);
 
 
 

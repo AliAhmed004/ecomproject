@@ -36,6 +36,7 @@ class ComposerStaticInit4fc4668529808c33dc1fbca67aa6447e
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
         'ed962a97bd972bc82007176b647d4e36' => __DIR__ . '/..' . '/facade/ignition/src/helpers.php',
+        '08ee81e4c49120d85f2d008418063b3c' => __DIR__ . '/../..' . '/app/Helpers/common.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -519,7 +520,8 @@ class ComposerStaticInit4fc4668529808c33dc1fbca67aa6447e
         'App\\Http\\Controllers\\Admin\\categoryController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/categoryController.php',
         'App\\Http\\Controllers\\Admin\\dashboardController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/dashboardController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
-        'App\\Http\\Controllers\\Front\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/Front/HomeController.php',
+        'App\\Http\\Controllers\\Front\\FrontController' => __DIR__ . '/../..' . '/app/Http/Controllers/Front/FrontController.php',
+        'App\\Http\\Controllers\\ProductPageController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProductPageController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
@@ -541,9 +543,6 @@ class ComposerStaticInit4fc4668529808c33dc1fbca67aa6447e
         'App\\Models\\Admin\\size' => __DIR__ . '/../..' . '/app/Models/Admin/size.php',
         'App\\Models\\Front\\home' => __DIR__ . '/../..' . '/app/Models/Front/home.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
-        'App\\Models\\home' => __DIR__ . '/../..' . '/app/Models/home.php',
-        'App\\Models\\product' => __DIR__ . '/../..' . '/app/Models/product.php',
-        'App\\Models\\productPage' => __DIR__ . '/../..' . '/app/Models/productPage.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
         'App\\Providers\\BroadcastServiceProvider' => __DIR__ . '/../..' . '/app/Providers/BroadcastServiceProvider.php',

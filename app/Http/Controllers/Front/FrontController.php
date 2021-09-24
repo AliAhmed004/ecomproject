@@ -69,21 +69,86 @@ class FrontController extends Controller
 
     function product($slug)
     {
+       //-------- Product Info--------
        $product['product']=DB::table('products')->where('slug',$slug)->get();
+      
        $product_id=$product['product'][0]->id;
+ 
        $category_id=$product['product'][0]->category_id;
+       $product['thubmnail_images']=DB::table('multiple_images')->where('pid',$product_id)->get();
+      
        $product['product_attributes']=DB::table('product_attr')->where('pid',$product_id)
        ->join('sizes','product_attr.size_id','sizes.id')
        ->join('colors','product_attr.color_id','colors.id')
        ->get();
-       
+
+       //-------- Related Products--------
        $product['related_products']=DB::table('products')->where('category_id','=',$category_id)->where('id','!=',$product_id)->get();
        foreach($product['related_products'] as $list)
        {
          $product['related_products_attr'][$list->id]=DB::table('product_attr')->where('pid','=',$list->id)->get();
        }
-       
+      
        return view('Front.product',$product);
+    }
+   
+    // Add to cart
+    function add_to_cart(Request $r)
+    {
+       if(session()->has('FRONT_LOGIN_USER'))
+       {
+          $uid=$r->session()->get('FRONT_LOGIN_USER');
+          $user_type="Reg";
+       }
+       else
+       {
+         $uid=getTempUserId();
+         $user_type="Not-Reg";
+       }
+       $color_name=$r->input('color_name');
+       $size_name=$r->input('size_name');
+       $product_ids=$r->input('product_ids');
+       $product_qty=$r->input('product_qty');
+   
+      $product_attr_id= DB::table('product_attr')
+       ->select('product_attr.id')
+       ->join('sizes','product_attr.size_id','=','sizes.id')
+       ->join('colors','product_attr.color_id','=','colors.id')
+       ->where('product_attr.pid',$product_ids)
+       ->where('sizes.size',$size_name)
+       ->where('colors.color',$color_name)
+       ->get();
+
+      
+       $check_data_exist=DB::table('cart')
+       ->where('user_id',$uid)
+       ->where('user_type',$user_type)
+       ->where('product_id',$product_ids)
+       ->where('product_attr_id',$product_attr_id[0]->id)
+       ->get();
+
+       if($check_data_exist->isEmpty())
+       {
+          DB::table('cart')
+          ->insertGetId(['user_id'=>$uid
+          ,'user_type'=>$user_type
+          ,'qty'=>$product_qty
+          ,'product_id'=>$product_ids
+          ,'product_attr_id'=>$product_attr_id[0]->id]);
+          $msg="Added";
+       }
+       else
+       {
+         DB::table('cart')
+         ->where('user_id',$uid)
+         ->where('user_type',$user_type)
+         ->where('product_id',$product_ids)
+         ->where('product_attr_id',$product_attr_id[0]->id)
+         ->update(['qty'=>$product_qty]);
+         $msg="Updated";
+       }
+
+       return response()->json(['status'=>$msg]);
     }
 
 }
