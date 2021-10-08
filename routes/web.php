@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\HomeBannerController;
 
 
 use App\Http\Controllers\Front\FrontController;
+use App\Mail\CustomerVerification;
 
 
 /*
@@ -103,10 +104,43 @@ Route::get('/logout',[AdminController::class,'admin_logout']);
 
 
 //------------ Front-Routes------------
-Route::get('/',[FrontController::class,'index']);
 
+//------------Home Page------------
+Route::get('/',[FrontController::class,'index']);
+Route::get('/home_add_to_cart',[FrontController::class,'home_add_to_cart']);
+
+//------------Product Page------------
 Route::get('/product/{slug}',[FrontController::class,'product']);
 Route::get('/add_to_cart',[FrontController::class,'add_to_cart']);
+
+//------------Cart Page------------
+Route::get('/cart',[FrontController::class,'cart']);
+Route::get('/cart_product_delete',[FrontController::class,'cart_product_delete']);
+
+//------------Category Page------------
+Route::get('/category/{id}',[FrontController::class,'category']);
+
+//------------Search------------
+ Route::get('/search/{str}',[FrontController::class,'search']);
+
+ //------------Customer Registration------------
+ Route::get('/registration',[FrontController::class,'registration']);
+ Route::get('/register',[FrontController::class,'register']);
+
+//------------Customer Login------------
+Route::post('/login_customer',[FrontController::class,'login']);
+Route::get('/user_logout',function(){
+  session()->forget('FRONT_USER_LOGIN');
+  session()->forget('FRONT_USER_ID');
+  session()->forget('FRONT_USER_NAME');
+  return redirect('/');
+});
+
+// Route::get('/check_mail',function(){
+  
+//   Mail::to('syedaliahmed004@gmail.com')->send(new CustomerVerification('6677'));
+//   echo "Mail Send";
+// });
 
 
 

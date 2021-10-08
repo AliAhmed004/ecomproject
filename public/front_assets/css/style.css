@@ -1105,7 +1105,7 @@ img {
 .aa-product-catg li {
   display: block;
   float: left;
-  height: 380px;
+  height: 420px;
   text-align: center;
   margin: 0 0 20px 55px;
   width: 20.5%;
@@ -2581,7 +2581,7 @@ img {
 #aa-myaccount .aa-myaccount-area {
   display: inline;
   float: left;
-  padding: 100px 0;
+  padding: 30px 0;
   width: 100%;
 }
 #aa-myaccount .aa-myaccount-area h4 {
@@ -2605,7 +2605,7 @@ img {
 /*---- Login form ----*/
 
 .aa-login-form input[type="text"],
-.aa-login-form input[type="password"] {
+.aa-login-form input[type="password"],.aa-login-form input[type="number"],.aa-login-form input[type="email"] {
   border: 1px solid #ccc;
   font-size: 16px;
   height: 40px;
@@ -4230,4 +4230,29 @@ img {
 .mt-5
 {
   margin-top: 15px;
+}
+.item_price::before,.item_total::before
+{
+  content:'$';
+}
+.left_cat_active
+{
+  color:#ff6666;
+}
+.r_alert
+{
+  width: 100%;
+  display: inline-block;
+  padding: 5px;
+}
+.r_success {
+  padding: 10px 5px;
+  margin: 20px 0;
+  color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+.login_status
+{
+  margin: 15px 0;
 }

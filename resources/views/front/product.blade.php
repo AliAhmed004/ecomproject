@@ -213,7 +213,7 @@
                 <li>
                   <figure>
                     <a class="aa-product-img" href="{{asset('product')}}/{{$pro_lists->slug}}"><img src="{{asset('storage/media')}}/{{$pro_lists->image}}" alt="polo shirt img"></a>
-                    <a class="aa-add-card-btn"href="#"><span class="fa fa-shopping-cart"></span>Add To Cart</a>
+                    <a class="aa-add-card-btn "href="#"><span class="fa fa-shopping-cart"></span>Add To Cart</a>
                      <figcaption>
                       <h4 class="aa-product-title"><a href="product/{{$pro_lists->slug}}">{{$pro_lists->title}}</a></h4>
                       <span class="aa-product-price">${{$related_products_attr[$pro_lists->id][0]->price}}</span><span class="aa-product-price"><del>${{$related_products_attr[$pro_lists->id][0]->mrp}}</del></span>

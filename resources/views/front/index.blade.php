@@ -49,7 +49,7 @@
                     <img src="{{asset('storage/media/categories')}}/{{$home_cats[0]->cat_image}}" alt="img">                    
                     <div class="aa-prom-content">
                       <!-- <span>75% Off</span> -->
-                      @if(!$home_cats->isEmpty())  <h4><a href="">{{$home_cats[0]->cat_name}}</a></h4> @endif                     
+                      @if(!$home_cats->isEmpty())  <h4><a href="{{url('category')}}/{{$home_cats[0]->id}}">{{$home_cats[0]->cat_name}}</a></h4> @endif                     
                     </div>
                   </div>
                 </div>
@@ -65,7 +65,7 @@
                       <img src="{{asset('storage/media/categories')}}/{{$val->cat_image}}" alt="img">                      
                       <div class="aa-prom-content">
                         <!-- <span>Exclusive Item</span> -->
-                        <h4><a href="#">{{$val->cat_name}}</a></h4>                        
+                        <h4><a href="{{url('category')}}/{{$val->id}}">{{$val->cat_name}}</a></h4>                        
                       </div>
                     </div>
                   </div>
@@ -122,12 +122,14 @@
                                 <li>
                                   <figure>
                                     <a class="aa-product-img" href="product/{{$list->slug}}"><img src="{{asset('storage/media')}}/{{$list->image}}" alt="polo shirt img"></a>
-                                    <a class="aa-add-card-btn"href="#"><span class="fa fa-shopping-cart"></span>Add To Cart</a>
+                                    <a class="aa-add-card-btn add_to_cart_home "href="#"><span class="fa fa-shopping-cart"></span>Add To Cart</a>
                                       <figcaption>
                                       <h4 class="aa-product-title"><a href="#">{{$list->title}}</a></h4>
                                       <span class="aa-product-price">{{$home_cats_products_attr[$list->id][0]->price}}</span><span class="aa-product-price"><del>{{$home_cats_products_attr[$list->id][0]->mrp}}</del></span>
                                     </figcaption>
-                                  </figure>                        
+                                  </figure>  
+                                  <input type="hidden" name="product_id" id="hp_product_id" value="{{$list->id}}">
+                                  <input type="hidden" name="product_attr_id" id="product_attr_id" value="{{$home_cats_products_attr[$list->id][0]->id}}">                       
                                   <div class="aa-product-hvr-content">
                                     <a href="#" data-toggle="tooltip" data-placement="top" title="Add to Wishlist"><span class="fa fa-heart-o"></span></a>
                                     <a href="#" data-toggle="tooltip" data-placement="top" title="Compare"><span class="fa fa-exchange"></span></a>
@@ -275,13 +277,15 @@
                     <li>
                       <figure>
                         <a class="aa-product-img" href="product/{{$featured_product_list->slug}}"><img src="{{asset('storage/media')}}/{{$featured_product_list->image}}" alt="polo shirt img"></a>
-                        <a class="aa-add-card-btn"href="#"><span class="fa fa-shopping-cart"></span>Add To Cart</a>
+                        <a class="aa-add-card-btn add_to_cart_home"href="#"><span class="fa fa-shopping-cart"></span>Add To Cart</a>
                          <figcaption>
                           <h4 class="aa-product-title"><a href="#">{{$featured_product_list->title}}</a></h4>
                           <span class="aa-product-price">${{$is_featured_attr[$featured_product_list->id][0]->price}}</span><span class="aa-product-price"><del>${{$is_featured_attr[$featured_product_list->id][0]->mrp}}</del></span>
                         </figcaption>
-                      </figure>                     
-                      <div class="aa-product-hvr-content">
+                      </figure>   
+                      <input type="hidden" name="product_id" id="hp_product_id" value="{{$featured_product_list->id}}">
+                      <input type="hidden" name="product_attr_id" id="product_attr_id" value="{{$is_featured_attr[$featured_product_list->id][0]->id}}">                       
+                       <div class="aa-product-hvr-content">
                         <a href="#" data-toggle="tooltip" data-placement="top" title="Add to Wishlist"><span class="fa fa-heart-o"></span></a>
                         <a href="#" data-toggle="tooltip" data-placement="top" title="Compare"><span class="fa fa-exchange"></span></a>
                         <a href="#" data-toggle2="tooltip" data-placement="top" title="Quick View" data-toggle="modal" data-target="#quick-view-modal"><span class="fa fa-search"></span></a>                            
@@ -307,12 +311,15 @@
                     <li>
                       <figure>
                         <a class="aa-product-img" href="product/{{$discounted_product_list->slug}}"><img src="{{asset('storage/media')}}/{{$discounted_product_list->image}}" alt="polo shirt img"></a>
-                        <a class="aa-add-card-btn"href="#"><span class="fa fa-shopping-cart"></span>Add To Cart</a>
+                        <a class="aa-add-card-btn add_to_cart_home"href="#"><span class="fa fa-shopping-cart"></span>Add To Cart</a>
                          <figcaption>
                           <h4 class="aa-product-title"><a href="#">{{$discounted_product_list->title}}</a></h4>
                           <span class="aa-product-price">${{$is_discounted_attr[$discounted_product_list->id][0]->price}}</span><span class="aa-product-price"><del>${{$is_discounted_attr[$discounted_product_list->id][0]->mrp}}</del></span>
                         </figcaption>
-                      </figure>                     
+                      </figure>      
+                      <input type="hidden" name="product_id" id="hp_product_id" value="{{$discounted_product_list->id}}">
+                      <input type="hidden" name="product_attr_id" id="product_attr_id" value="{{$is_discounted_attr[$discounted_product_list->id][0]->id}}">                       
+                                     
                       <div class="aa-product-hvr-content">
                         <a href="#" data-toggle="tooltip" data-placement="top" title="Add to Wishlist"><span class="fa fa-heart-o"></span></a>
                         <a href="#" data-toggle="tooltip" data-placement="top" title="Compare"><span class="fa fa-exchange"></span></a>
@@ -340,12 +347,15 @@
                     <li>
                       <figure>
                         <a class="aa-product-img" href="product/{{$is_trending_list->slug}}"><img src="{{asset('storage/media')}}/{{$is_trending_list->image}}" alt="polo shirt img"></a>
-                        <a class="aa-add-card-btn"href="#"><span class="fa fa-shopping-cart"></span>Add To Cart</a>
+                        <a class="aa-add-card-btn add_to_cart_home"href="#"><span class="fa fa-shopping-cart"></span>Add To Cart</a>
                          <figcaption>
                           <h4 class="aa-product-title"><a href="#">{{$is_trending_list->title}}</a></h4>
                           <span class="aa-product-price">${{$is_trending_attr[$is_trending_list->id][0]->price}}</span><span class="aa-product-price"><del>${{$is_discounted_attr[$discounted_product_list->id][0]->mrp}}</del></span>
                         </figcaption>
-                      </figure>                     
+                      </figure>     
+                      <input type="hidden" name="product_id" id="hp_product_id" value="{{$is_trending_list->id}}">
+                      <input type="hidden" name="product_attr_id" id="product_attr_id" value="{{$is_trending_attr[$is_trending_list->id][0]->id}}">                       
+                                     
                       <div class="aa-product-hvr-content">
                         <a href="#" data-toggle="tooltip" data-placement="top" title="Add to Wishlist"><span class="fa fa-heart-o"></span></a>
                         <a href="#" data-toggle="tooltip" data-placement="top" title="Compare"><span class="fa fa-exchange"></span></a>
@@ -573,27 +583,12 @@
   <!-- / Subscribe section -->
 
 
-  <!-- Login Modal -->  
-  <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">                      
-        <div class="modal-body">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4>Login or Register</h4>
-          <form class="aa-login-form" action="">
-            <label for="">Username or Email address<span>*</span></label>
-            <input type="text" placeholder="Username or email">
-            <label for="">Password<span>*</span></label>
-            <input type="password" placeholder="Password">
-            <button class="aa-browse-btn" type="submit">Login</button>
-            <label for="rememberme" class="rememberme"><input type="checkbox" id="rememberme"> Remember me </label>
-            <p class="aa-lost-password"><a href="#">Lost your password?</a></p>
-            <div class="aa-register-now">
-              Don't have an account?<a href="account.html">Register now!</a>
-            </div>
-          </form>
-        </div>                        
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div>    
+  
+  <!-- Add to cart -->
+  <form id="home_atc_form" action="" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="product_qty" class="product_qty" value="1">
+  <input type="hidden" name="product_attr_id" class="product_attr_id" value="">
+  <input type="hidden" name="product_id" class="product_id" value="">
+  @csrf
+  </form>   
 @endsection

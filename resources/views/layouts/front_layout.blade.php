@@ -9,7 +9,7 @@
     <link href="{{asset('front_assets/css/bootstrap.css')}}" rel="stylesheet">   
     <link href="{{asset('front_assets/css/jquery.smartmenus.bootstrap.css')}}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{asset('front_assets/css/jquery.simpleLens.css')}}">    
-    <link rel="stylesheet" type="text/css" href="{{asset('front_assets/css/slick.css')}}"> -->
+    <link rel="stylesheet" type="text/css" href="{{asset('front_assets/css/slick.css')}}"> 
     <link rel="stylesheet" type="text/css" href="{{asset('front_assets/css/nouislider.css')}}">
     <link id="switcher" href="{{asset('front_assets/css/theme-color/default-theme.css')}}" rel="stylesheet">
     <link href="{{asset('front_assets/css/sequence-theme.modern-slide-in.css')}}" rel="stylesheet" media="all">
@@ -17,8 +17,9 @@
 
      <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
-    
-
+    <script>
+    var PRODUCT_IMG="{{asset('storage/media/product_attributes')}}";
+    </script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -28,7 +29,7 @@
   
 
   </head>
-  <body> 
+  <body class="productPage" > 
  
 <!-- wpf loader Two -->
 <!-- <div id="wpf-loader-two">          
@@ -94,7 +95,11 @@
                   <li class="hidden-xs"><a href="wishlist.html">Wishlist</a></li>
                   <li class="hidden-xs"><a href="cart.html">My Cart</a></li>
                   <li class="hidden-xs"><a href="checkout.html">Checkout</a></li>
+                  @if(session()->has('FRONT_USER_LOGIN'))
+                  <li><a href="{{url('/user_logout')}}" >Logout</a></li>
+                  @else
                   <li><a href="" data-toggle="modal" data-target="#login-modal">Login</a></li>
+                  @endif
                 </ul>
               </div>
             </div>
@@ -113,7 +118,7 @@
               <!-- logo  -->
               <div class="aa-logo">
                 <!-- Text based logo -->
-                <a href="index.html">
+                <a href="{{url('/')}}">
                   <span class="fa fa-shopping-cart"></span>
                   <p>daily<strong>Shop</strong> <span>Your Shopping Partner</span></p>
                 </a>
@@ -122,48 +127,58 @@
               </div>
               <!-- / logo  -->
                <!-- cart box -->
+               
               <div class="aa-cartbox">
-                <a class="aa-cart-link" href="#">
+                <a class="aa-cart-link" href="{{url('/cart')}}">
                   <span class="fa fa-shopping-basket"></span>
                   <span class="aa-cart-title">SHOPPING CART</span>
-                  <span class="aa-cart-notify">2</span>
+                  <span class="aa-cart-notify">{{ItemsCount()}}</span>
                 </a>
-                <div class="aa-cartbox-summary">
-                  <ul>
-                    <li>
-                      <a class="aa-cartbox-img" href="#"><img src="img/woman-small-2.jpg" alt="img"></a>
-                      <div class="aa-cartbox-info">
-                        <h4><a href="#">Product Name</a></h4>
-                        <p>1 x $250</p>
-                      </div>
-                      <a class="aa-remove-product" href="#"><span class="fa fa-times"></span></a>
-                    </li>
-                    <li>
-                      <a class="aa-cartbox-img" href="#"><img src="img/woman-small-1.jpg" alt="img"></a>
-                      <div class="aa-cartbox-info">
-                        <h4><a href="#">Product Name</a></h4>
-                        <p>1 x $250</p>
-                      </div>
-                      <a class="aa-remove-product" href="#"><span class="fa fa-times"></span></a>
-                    </li>                    
+               <div class="container_cartbox" >
+
+               @if(ItemsCount() !=0)
+                  <div class="aa-cartbox-summary">
+                    
+                    <ul>
+                    @php
+                    $i=0
+                    @endphp
+                    @foreach(tonavCartBox() as $cartBox)
+
+                        <li>
+                          <a class="aa-cartbox-img" href="#"><img src="{{asset('storage/media/product_attributes')}}/{{$cartBox->image}}" alt="img"></a>
+                          <div class="aa-cartbox-info">
+                            <h4><a href="{{url('product')}}/{{$cartBox->slug}}">{{$cartBox->title}}</a></h4>
+                            <p>{{$cartBox->qty}} x {{$cartBox->price}}</p>
+                          </div>
+                          <!-- <a class="aa-remove-product" href="#"><span class="fa fa-times"></span></a> -->
+                        </li>
+                        @php
+                       $i=($cartBox->qty * $cartBox->price) + $i
+                       @endphp
+                    @endforeach
                     <li>
                       <span class="aa-cartbox-total-title">
                         Total
                       </span>
                       <span class="aa-cartbox-total-price">
-                        $500
+                        {{ $i}}
                       </span>
                     </li>
-                  </ul>
+                    </ul>
                   <a class="aa-cartbox-checkout aa-primary-btn" href="checkout.html">Checkout</a>
                 </div>
+                @endif
+               </div>
+               
               </div>
+              
               <!-- / cart box -->
               <!-- search box -->
               <div class="aa-search-box">
                 <form action="">
-                  <input type="text" name="" id="" placeholder="Search here ex. 'man' ">
-                  <button type="submit"><span class="fa fa-search"></span></button>
+                  <input type="text" name="" id="search_content"  placeholder="Search here ex. 'man' ">
+                  <button type="submit" id="search" ><span class="fa fa-search"></span></button>
                 </form>
               </div>
               <!-- / search box -->             
@@ -384,6 +399,50 @@
       </div>
      </div>
     </div>
+    <!-- Login Modal -->  
+   <?php
+    if(isset($_COOKIE['user_email']) && isset($_COOKIE['user_password']))
+    {
+        $email=$_COOKIE['user_email'];
+        $password=$_COOKIE['user_password'];
+        $is_remember='checked=checked';
+      }
+        else
+      {
+        $email='';
+        $password='';
+        $is_remember='';
+      }
+   ?>
+  <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">                      
+        <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4>Login or Register</h4>
+          <form class="aa-login-form" id="customer_login" method="post" action="">
+            <label for="">Email Address</label>
+            <input type="text" name="login_customer_email" value="{{$email}}" placeholder="Email Address">
+            <label for="">Password</label>
+            <input type="password" name="login_customer_pass" value="{{$password}}" placeholder="Password">
+            @csrf
+            <button class="aa-browse-btn" id="login_user" type="submit">Login</button>
+            <label for="rememberme" class="rememberme">
+              <input type="checkbox" name="rememberme" {{$is_remember}} id="rememberme"> Remember me </label>
+
+            <div class="login_status" ></div> 
+            <p class="aa-lost-password"><a href="#">Lost your password?</a></p>
+            
+            <div class="aa-register-now">
+              Don't have an account?<a href="/registration">Register now!</a>
+            </div>
+             
+          </form>
+        </div>   
+                          
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div> 
     <!-- footer-bottom -->
     <div class="aa-footer-bottom">
       <div class="container">
