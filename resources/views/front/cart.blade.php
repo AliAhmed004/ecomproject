@@ -40,7 +40,7 @@
        <div class="col-md-12">
          <div class="cart-view-area">
            <div class="cart-view-table">
-             <form action="">
+             <form action="" id="cart_products" >
                <div class="table-responsive">
                   <table class="table">
                     <thead>
@@ -61,14 +61,15 @@
                       <tr>
                         <td>
                             <a class="remove" href=""><fa class="fa fa-close"></fa></a>
-                            <input type="hidden" name="cart_product_id" id="cart_product_id" value="{{$cat_items->id}}">
-                       
+                            <input type="hidden" name="cart_qty" id="cart_qty" value="">
+                            <input type="hidden" name="cart_product_id" class="crt_id" id="cart_product_id" value="{{$cat_items->id}}">
+                            
                         </td>
                            
                             <td><a href="{{asset('storage/media/product_attributes')}}/{{$cat_items->image}}"><img src="{{asset('storage/media/product_attributes')}}/{{$cat_items->image}}" alt="img"></a>
                         
                     </td>
-                       
+                       @csrf
                         <td>
                             <a class="aa-cart-title" href="product/{{$cat_items->slug}}">{{$cat_items->title}}</a>
                             <br>
@@ -79,7 +80,10 @@
                             {{$cat_items->price}}
                 
                         </td>
-                        <td><input class="aa-cart-quantity"  type="number" value="{{$cat_items->qty}}"></td>
+                        <td><input class="aa-cart-quantity"  type="number" value="{{$cat_items->qty}}">
+                      
+                           
+                        </td>
                         <td>{{$cat_items->price * $cat_items->qty}}</td>
                       </tr>
                    @php
@@ -93,20 +97,7 @@
              </form>
              <!-- Cart Total view -->
              <div class="cart-view-total">
-               <h4>Cart Totals</h4>
-               <table class="aa-totals-table">
-                 <tbody>
-                   <tr>
-                     <th>Subtotal</th>
-                     <td>$450</td>
-                   </tr>
-                   <tr>
-                     <th>Total</th>
-                     <td class="item_total">{{$i}}</td>
-                   </tr>
-                 </tbody>
-               </table>
-               <a href="#" class="aa-cart-view-btn">Proced to Checkout</a>
+               <a href="{{url('/checkout')}}" class="aa-cart-view-btn">Proced to Checkout</a>
              </div>
            </div>
          </div>

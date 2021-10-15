@@ -116,6 +116,7 @@ Route::get('/add_to_cart',[FrontController::class,'add_to_cart']);
 //------------Cart Page------------
 Route::get('/cart',[FrontController::class,'cart']);
 Route::get('/cart_product_delete',[FrontController::class,'cart_product_delete']);
+Route::get('/cart_items_update',[FrontController::class,'cart_items_update']);
 
 //------------Category Page------------
 Route::get('/category/{id}',[FrontController::class,'category']);
@@ -126,21 +127,25 @@ Route::get('/category/{id}',[FrontController::class,'category']);
  //------------Customer Registration------------
  Route::get('/registration',[FrontController::class,'registration']);
  Route::get('/register',[FrontController::class,'register']);
+ Route::get('/Verification/{code}',[FrontController::class,'verification']);
 
-//------------Customer Login------------
+//------------Customer Login/Logout------------
 Route::post('/login_customer',[FrontController::class,'login']);
 Route::get('/user_logout',function(){
-  session()->forget('FRONT_USER_LOGIN');
-  session()->forget('FRONT_USER_ID');
+  session()->forget('FRONT_LOGIN_USER');
   session()->forget('FRONT_USER_NAME');
-  return redirect('/');
+  session()->forget('USE_TEMP_ID');
+  return redirect()->back();
 });
 
-// Route::get('/check_mail',function(){
-  
-//   Mail::to('syedaliahmed004@gmail.com')->send(new CustomerVerification('6677'));
-//   echo "Mail Send";
-// });
+//------------ Checkout ------------
+Route::get('/checkout',[FrontController::class,'checkout']);
+Route::post('/coupon_code',[FrontController::class,'coupon_code']);
+Route::post('/remove_coupon_code',[FrontController::class,'remove_coupon_code']);
+
+//------------ Order ------------
+Route::post('/place_order',[FrontController::class,'place_order']);
+
 
 
 

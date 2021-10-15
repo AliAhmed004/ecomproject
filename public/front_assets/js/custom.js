@@ -510,10 +510,19 @@ $('.aa-cart-quantity').change(function(){
   var price=parseInt($(this).parent('td').prev().text())
   var qty=parseInt($(this).val())
  $(this).parent('td').next().addClass('list_total').text(price*qty)
- var update_prodcut_total= $('.list_total').text()
- var total=parseInt($('.item_total').text())
-
- $('.item_total').text((price * qty) + total)
+  $('#cart_products #cart_qty').attr('value',qty)
+  var item_id=$(this).parents('tr').find('.crt_id').val()
+  // var item_id=$(this).parent('td').find('#cart_product_id').attr('value');
+  //  $('#cart_products .crt_id').attr('value',item_id);
+  //  console.log(qty,item_id)
+  $.ajax({
+    url:'/cart_items_update',
+    data:{qty:qty,item_id:item_id},
+    dataType:"json",
+    success: function(response){
+    
+      }
+  })
  
 })
 
@@ -562,7 +571,7 @@ $(document).on('click','#register_btn',function(event){
     data:$('#helo').serialize(),
     dataType:"json",
     success: function(response){
-     
+    
       if(response.status=='Error')
       {
       $('#helo span').remove();
@@ -577,6 +586,8 @@ $(document).on('click','#register_btn',function(event){
        $('.success_registration').addClass('r_success').html(response.msg);
        $('#helo')[0].reset();
     }
+   
+
     
     }
   })
@@ -616,6 +627,92 @@ $('#login_user').click(function(e){
       window.location.href='/'
       
     }
+      
+    if(response.status=='NotValid')
+    {
+      $('.login_status').addClass('r_alert alert-danger').html(response.msg);
+    }
+    
+    }
+  })
+})
+
+// Coupon Code
+
+$('.apc').click(function(e){
+  e.preventDefault()
+ var code = $('.aa-coupon-code').val()
+  if(code!='')
+  {
+    
+  $.ajax({
+    url:'/coupon_code',
+    type:'post',
+    data:{coupon_code:code,_token:$('[name=_token]').val()},
+    dataType:"json",
+    type:"post",
+    success: function(response){
+      if(response.status=='invalid')
+      {
+        $('.coupon_panel').html('<div class="alert alert-danger mt-5" role="alert">'+response.msg+'</div>')
+      }
+      if(response.status=='min_order_am')
+      {
+        $('.coupon_panel').html('<div class="alert alert-danger mt-5" role="alert">'+response.msg+'</div>')
+      }
+      if(response.status=='deactivate')
+      {
+        $('.coupon_panel').html('<div class="alert alert-danger mt-5" role="alert">'+response.msg+'</div>')
+      }
+      if(response.status=='success')
+      {
+        $('.applied_code').removeClass('hide')
+        $('.applied_code th').removeClass('hide').html(response.msg + '<br><a href="" class="remove_coupon_code">Remove</a>')
+        $('.applied_code td').removeClass('hide').html(code)
+        $('.aapc_total td').html(response.total)
+        $('.aa-checkout-coupon').addClass('hide');
+      }
+      
+    }
+  })
+  }
+  else
+  {
+    $('.coupon_panel').html('<div class="alert alert-danger mt-5" role="alert">Please add a Copuon Code</div>')
+  }
+})
+
+// Remove Coupon Code
+$(document).on('click','.remove_coupon_code',function(e){
+  e.preventDefault()
+ var code = $('.aa-coupon-code').val()
+$('.applied_code').addClass('hide')
+    
+  $.ajax({
+    url:'/remove_coupon_code',
+    data:{coupon_code:code,_token:$('[name=_token]').val()},
+    dataType:"json",
+    type:"post",
+    success: function(response){
+      $('.aapc_total td').html(response.total)
+      $('.aa-checkout-coupon').removeClass('hide');
+      $('.aa-coupon-code').val('')
+    }
+  })
+ 
+ 
+})
+
+// Place Order
+$('#place_order').click(function(e){
+  e.preventDefault();
+
+  $.ajax({
+    url:'/place_order',
+    data:$('#items_order').serialize(),
+    dataType:"json",
+    type:"post",
+    success: function(response){
     
     }
   })

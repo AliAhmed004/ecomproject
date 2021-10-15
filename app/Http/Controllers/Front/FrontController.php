@@ -210,12 +210,18 @@ class FrontController extends Controller
       {
          $uid=$r->session()->get('FRONT_LOGIN_USER');
          $user_type="Reg";
+
+         if(session()->has('USE_TEMP_ID'))
+        {
+         DB::table('cart')->where('user_id','=',session()->get('USE_TEMP_ID'))->update(['user_id'=>$uid,'user_type'=>'Reg']);
+        }
       }
       else
       {
         $uid=getTempUserId();
         $user_type="Not-Reg";
       }
+        
       $cart['cart']=DB::table('cart')
           ->join('products','cart.product_id','=','products.id')
           ->join('product_attr','cart.product_attr_id','=','product_attr.id')
@@ -224,7 +230,17 @@ class FrontController extends Controller
           ->where('cart.user_id',$uid)
           ->select('cart.id','cart.qty','products.title','products.slug','sizes.size','colors.color','product_attr.image','product_attr.price')
           ->get();
+
        return view('front.cart',$cart);
+    }
+
+    // cart page items update
+    function cart_items_update(Request $r)
+    { 
+       
+      $qty=$r->input('qty');
+      $item_id=$r->input('item_id');
+       DB::table('cart')->where('id','=',$item_id)->update(['qty'=>$qty]);
     }
 
    //  Cart Item Delete
@@ -317,7 +333,7 @@ class FrontController extends Controller
 
 function registration()
 {
-   if(!session()->has('FRONT_USER_LOGIN'))
+   if(!session()->has('FRONT_LOGIN_USER'))
    {
     return view('front.registration');
    }
@@ -332,8 +348,8 @@ function register(Request $r)
    $valid=validator::make($r->all(),[
       'uname'=>'required',
       'email'=>'required|email|unique:customers,email',
-      'password'=>'required',
-      'mob'=>'required'
+      'password'=>'required|min:6',
+      'mob'=>'required|min:11|max:11'
    ]);
    if(!$valid->passes())
    {
@@ -358,6 +374,28 @@ function register(Request $r)
       return response()->json(['status'=>'success','msg'=>'Registration Successfully, Please Check Your Mail Id for the Verification']);
    }
 }
+
+//  Email Verification
+function verification($code)
+{
+   $verified=DB::table('customers')->where('rand_id',$code)->get();
+  if(isset($verified[0]))
+  {
+    if(DB::table('customers')->where('rand_id','=',$code)->where('is_verified',1)->count() > 0)
+    {
+      return redirect('/');
+    }  
+    else
+    {
+   DB::table('customers')->where('rand_id','=',$code)->update(['is_verified'=>1]);
+   return view('front.email_verified');
+   }
+  }
+  else
+  {
+     return redirect('/');
+  }
+}
 // Customer Login
 function login(Request $r)
 {
@@ -378,10 +416,17 @@ else
    if(isset($get_email[0]))
    {
         $db_pwd=Crypt::decrypt($get_email[0]->password);
+
         if($password==$db_pwd)
         {
-           session()->put('FRONT_USER_LOGIN',true);
-           session()->put('FRONT_USER_ID',$get_email[0]->id);
+           if($get_email[0]->is_verified <= 0)
+           {
+            $status='NotValid';
+            $msg='Please Verifiy your email id';
+            return response()->json(['status'=>$status,'msg'=>$msg]);
+           }
+         //   session()->put('FRONT_USER_LOGIN',true);
+           session()->put('FRONT_LOGIN_USER',$get_email[0]->id);
            session()->put('FRONT_USER_NAME',$get_email[0]->name);
            if($r->input('rememberme')===null)
            {
@@ -413,7 +458,165 @@ else
   
   
 }
+// Coupon Code
+function coupon_code(Request $r)
+{
+   $code=$r->input('coupon_code');
+   $result=DB::table('coupons')->where('code',$code)->get();
+   $total_price=0;
+   if(isset($result[0]))
+   {
+      $type=$result[0]->type;
+      $value=$result[0]->value;
+            if($result[0]->status==1)
+            {
+                  if($result[0]->is_one_time==1)
+                  {
+                        $status='error';
+                        $msg='Coupon Code Already Used';
+                  }
+                  else
+                  {
+                        $min_order_am=$result[0]->min_order_am;
+                        if($min_order_am > 0)
+                        {
+                              
+                              foreach(currentUserCartItems() as $list_items)
+                              {
+                                 $total_price = $total_price + ($list_items->qty * $list_items->price); 
+                              }
+                                 
+                              if($total_price > $min_order_am)
+                              {
+                                 $status='success';
+                                 $msg='Coupon Code Applied';
+                              }
+                              else
+                              {
+                                    $status='min_order_am';
+                                    $msg='Price must be Greater than '.$min_order_am;
+                              }
+                        }
+                        else
+                        {
+                           $status='success';
+                           $msg='Coupon Code Applied';
+                        }
+                       
+                     
+                  }
+            }
+            else
+            {
+               $status='deactivate';
+               $msg='Coupon Code Deactivate';
+            }
+            // $status='success';
+            // $msg='Coupon Code Applied';
+   }
+   else
+   {
+      $status='invalid';
+      $msg='Please Enter Valid Code';
+   }
 
+   if($status=='success')
+   {
+      if($type=='value')
+      {
+         $total_price=$total_price-$value;
+      }
+      if($type=='per')
+      {
+         $total_price=($value/100)*$total_price;
+      }
+   }
+   return response()->json(['status'=>$status,'msg'=>$msg,'total'=>$total_price]);
+}
+// Remove Coupon Code
+function remove_coupon_code()
+{
+   $total_price=0;
+   foreach(currentUserCartItems() as $list_items)
+   {
+      $total_price = $total_price + ($list_items->qty * $list_items->price); 
+   }
+   return response()->json(['total'=>$total_price]);                       
+}
+
+// Checkout
+
+function checkout()
+{
+   if(ItemsCount() > 0)
+   {
+  
+      $checkout['cart_items']=currentUserCartItems();
+      if(session()->has('FRONT_LOGIN_USER'))
+      {
+      $customer_details=DB::table('customers')->where('id',session()->get('FRONT_LOGIN_USER'))->get();
+      $checkout['customer_details']['name']=$customer_details[0]->name;
+      $checkout['customer_details']['email']=$customer_details[0]->email;
+      $checkout['customer_details']['city']=$customer_details[0]->city;
+      $checkout['customer_details']['address']=$customer_details[0]->address;
+      $checkout['customer_details']['mobile']=$customer_details[0]->mobile;
+      $checkout['required']='required';
+      }
+      else
+      {
+         $checkout['customer_details']['name']='';
+         $checkout['customer_details']['email']='';
+         $checkout['customer_details']['city']='';
+         $checkout['customer_details']['address']='';
+         $checkout['customer_details']['mobile']='';
+         $checkout['required']='';
+      }
+     
+      return view('front.checkout',$checkout);
+   }
+   else
+   {
+      return redirect('/');
+   }
+  
+}
+ // Place Order
+ function place_order(Request $r)
+ {
+    prx(cartData());
+    if(session()->has('FRONT_LOGIN_USER'))
+    {
+      $uid=session()->get('FRONT_LOGIN_USER');
+      $total_price=0;
+      foreach(currentUserCartItems() as $list_items)
+      {
+         $total_price = $total_price + ($list_items->qty * $list_items->price); 
+      }
+       $arr=[
+          'customer_id'=>$uid,
+          'name'=>$r->input('name'),
+          'email'=>$r->input('email'),
+          'city'=>$r->input('city'),
+          'mobile'=>$r->input('mobile'),
+          'address'=>$r->input('address'),
+          'Payment_type'=>$r->input('payment_type'),
+          'coupon_code'=>$r->input('coupon_code'),
+          'Payment_type'=>$r->input('Payment_type'),
+          'Payment_status'=>'Pending',
+          'order_status'=>1,
+          'total_amt'=>$total_price,
+          'added_on'=>date('Y-m-d h:i:s'),
+          
+       ];
+       $data_id=DB::table('orders')->insertGetId($arr);
+       echo $data_id;
+    }
+    else
+    {
+
+    }
+    prx($r->all());
+ }
 }
 
 

@@ -1,12 +1,10 @@
 @component('mail::message')
-# Introduction
+
 
 Email Id Verification , 
 Please click here
-<a href="{{url('/Verification')/$rand_id}}">Confirmation</a>
-<!-- @component('mail::button', ['url' => '{{url(/Verification)/$rand_id}}']) -->
-Confirmation
-@endcomponent
+
+<a  href="{{url('Verification')}}/{{$rand_id}}" id="verification_btn">Confirmation</a>
 
 Thanks,<br>
 {{ config('app.name') }}

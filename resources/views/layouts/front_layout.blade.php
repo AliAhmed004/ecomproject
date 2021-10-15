@@ -94,8 +94,8 @@
                   <li><a href="account.html">My Account</a></li>
                   <li class="hidden-xs"><a href="wishlist.html">Wishlist</a></li>
                   <li class="hidden-xs"><a href="cart.html">My Cart</a></li>
-                  <li class="hidden-xs"><a href="checkout.html">Checkout</a></li>
-                  @if(session()->has('FRONT_USER_LOGIN'))
+                  <li class="hidden-xs"><a href="{{url('/checkout')}}">Checkout</a></li>
+                  @if(session()->has('FRONT_LOGIN_USER'))
                   <li><a href="{{url('/user_logout')}}" >Logout</a></li>
                   @else
                   <li><a href="" data-toggle="modal" data-target="#login-modal">Login</a></li>
