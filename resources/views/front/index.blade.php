@@ -125,7 +125,7 @@
                                     <a class="aa-add-card-btn add_to_cart_home "href="#"><span class="fa fa-shopping-cart"></span>Add To Cart</a>
                                       <figcaption>
                                       <h4 class="aa-product-title"><a href="#">{{$list->title}}</a></h4>
-                                      <span class="aa-product-price">{{$home_cats_products_attr[$list->id][0]->price}}</span><span class="aa-product-price"><del>{{$home_cats_products_attr[$list->id][0]->mrp}}</del></span>
+                                      <span class="aa-product-price" id="single_pro_price">{{$home_cats_products_attr[$list->id][0]->price}}</span><span class="aa-product-price"><del>{{$home_cats_products_attr[$list->id][0]->mrp}}</del></span>
                                     </figcaption>
                                   </figure>  
                                   <input type="hidden" name="product_id" id="hp_product_id" value="{{$list->id}}">
@@ -280,7 +280,7 @@
                         <a class="aa-add-card-btn add_to_cart_home"href="#"><span class="fa fa-shopping-cart"></span>Add To Cart</a>
                          <figcaption>
                           <h4 class="aa-product-title"><a href="#">{{$featured_product_list->title}}</a></h4>
-                          <span class="aa-product-price">${{$is_featured_attr[$featured_product_list->id][0]->price}}</span><span class="aa-product-price"><del>${{$is_featured_attr[$featured_product_list->id][0]->mrp}}</del></span>
+                          <span class="aa-product-price" id="single_pro_price">${{$is_featured_attr[$featured_product_list->id][0]->price}}</span><span class="aa-product-price"><del>${{$is_featured_attr[$featured_product_list->id][0]->mrp}}</del></span>
                         </figcaption>
                       </figure>   
                       <input type="hidden" name="product_id" id="hp_product_id" value="{{$featured_product_list->id}}">
@@ -314,7 +314,7 @@
                         <a class="aa-add-card-btn add_to_cart_home"href="#"><span class="fa fa-shopping-cart"></span>Add To Cart</a>
                          <figcaption>
                           <h4 class="aa-product-title"><a href="#">{{$discounted_product_list->title}}</a></h4>
-                          <span class="aa-product-price">${{$is_discounted_attr[$discounted_product_list->id][0]->price}}</span><span class="aa-product-price"><del>${{$is_discounted_attr[$discounted_product_list->id][0]->mrp}}</del></span>
+                          <span class="aa-product-price" id="single_pro_price">${{$is_discounted_attr[$discounted_product_list->id][0]->price}}</span><span class="aa-product-price"><del>${{$is_discounted_attr[$discounted_product_list->id][0]->mrp}}</del></span>
                         </figcaption>
                       </figure>      
                       <input type="hidden" name="product_id" id="hp_product_id" value="{{$discounted_product_list->id}}">
@@ -589,6 +589,7 @@
   <input type="hidden" name="product_qty" class="product_qty" value="1">
   <input type="hidden" name="product_attr_id" class="product_attr_id" value="">
   <input type="hidden" name="product_id" class="product_id" value="">
+  <input type="hidden" name="product_price" class="product_price" value="">
   @csrf
   </form>   
 @endsection

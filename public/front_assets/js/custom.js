@@ -414,6 +414,7 @@ $(document).on('click','.atc',function(e){
    {
     var qty =$('#atc_form .product_qty').attr('value',$('#quantity').val());
     var product_id =$('#atc_form .product_cart_id').attr('value',$('#products_id').val());
+    var product_price =$('#atc_form .product_price').attr('value',$('#single_pro_price').text());
      
      $.ajax({
       
@@ -452,6 +453,7 @@ $('.add_to_cart_home').click(function(e){
   e.preventDefault();
 var pqty =$('#home_atc_form .product_attr_id').attr('value',$(this).parents('li').find('#product_attr_id').val());
 var pid =$('#home_atc_form .product_id').attr('value',$(this).parents('li').find('#hp_product_id').val());
+var product_price =$('#home_atc_form .product_price').attr('value',$('#single_pro_price').text());
   
   $.ajax({
       
@@ -713,7 +715,11 @@ $('#place_order').click(function(e){
     dataType:"json",
     type:"post",
     success: function(response){
-    
+         if(response.status=='success')
+         {
+           location.href='/order_placed'
+         }
+         $('.place_order_alert').addClass('alert alert-danger').text(response.msg)
     }
   })
 })

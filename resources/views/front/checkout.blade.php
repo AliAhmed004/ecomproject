@@ -264,6 +264,7 @@
                     <label for="paypal"><input type="radio" id="paypal" name="Payment_type" value="Paypal"> Via Paypal </label>
                     <input type="submit" value="Place Order" class="aa-browse-btn " id="place_order">                
                   </div>
+                  <div class="place_order_alert mt-5" role="alert"></div>
                 </div>
               </div>
             </div>

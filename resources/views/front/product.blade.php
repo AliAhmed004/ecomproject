@@ -50,7 +50,7 @@
                   <div class="aa-product-view-content">
                     <h3>{{$product[0]->title}}</h3>
                     <div class="aa-price-block">
-                      <span class="aa-product-view-price">${{$product_attributes[0]->price}}</span>
+                      <span class="aa-product-view-price " id="single_pro_price">{{$product_attributes[0]->price}}</span>
                       <!-- <p class="aa-product-avilability">Avilability: <span>In stock</span></p> -->
                     </div>
                     <div>
@@ -330,6 +330,7 @@
   <input type="hidden" name="color_name" class="color_name" value="">
   <input type="hidden" name="product_qty" class="product_qty" value="">
   <input type="hidden" name="product_ids" class="product_cart_id" value="">
+  <input type="hidden" name="product_price" class="product_price" value="">
   @csrf
   </form>
   @endsection

@@ -135,6 +135,8 @@ Route::get('/user_logout',function(){
   session()->forget('FRONT_LOGIN_USER');
   session()->forget('FRONT_USER_NAME');
   session()->forget('USE_TEMP_ID');
+  // session()->forget('order_id');
+  
   return redirect()->back();
 });
 
@@ -145,6 +147,9 @@ Route::post('/remove_coupon_code',[FrontController::class,'remove_coupon_code'])
 
 //------------ Order ------------
 Route::post('/place_order',[FrontController::class,'place_order']);
+Route::get('/order_placed',[FrontController::class,'place_order_notification']);
+
+
 
 
 

@@ -98,6 +98,7 @@ class FrontController extends Controller
     // Add to cart
     function add_to_cart(Request $r)
     {
+       
        if(session()->has('FRONT_LOGIN_USER'))
        {
           $uid=$r->session()->get('FRONT_LOGIN_USER');
@@ -112,6 +113,7 @@ class FrontController extends Controller
        $size_name=$r->input('size_name');
        $product_ids=$r->input('product_ids');
        $product_qty=$r->input('product_qty');
+       $product_price=($product_qty * $r->input('product_price'));
    
       $product_attr_id= DB::table('product_attr')
        ->select('product_attr.id')
@@ -137,6 +139,7 @@ class FrontController extends Controller
           ,'user_type'=>$user_type
           ,'qty'=>$product_qty
           ,'product_id'=>$product_ids
+          ,'product_price'=>$product_price
           ,'product_attr_id'=>$product_attr_id[0]->id]);
           $msg="Added";
        }
@@ -147,7 +150,7 @@ class FrontController extends Controller
          ->where('user_type',$user_type)
          ->where('product_id',$product_ids)
          ->where('product_attr_id',$product_attr_id[0]->id)
-         ->update(['qty'=>$product_qty]);
+         ->update(['qty'=>$product_qty,'product_price'=>$product_price]);
          $msg="Updated";
        }
 
@@ -170,6 +173,7 @@ class FrontController extends Controller
       $product_qty=$r->input('product_qty');
       $product_attr_id=$r->input('product_attr_id');
       $product_id=$r->input('product_id');
+      $product_price= $product_qty * $r->input('product_price');
 
       $check_data_exist=DB::table('cart')
        ->where('user_id',$uid)
@@ -185,6 +189,7 @@ class FrontController extends Controller
           ,'user_type'=>$user_type
           ,'qty'=>$product_qty
           ,'product_id'=>$product_id
+          ,'product_price'=>$product_price
           ,'product_attr_id'=>$product_attr_id]);
           $msg="Added";
        }
@@ -195,7 +200,7 @@ class FrontController extends Controller
          ->where('user_type',$user_type)
          ->where('product_id',$product_id)
          ->where('product_attr_id',$product_attr_id)
-         ->update(['qty'=>$product_qty]);
+         ->update(['qty'=>$product_qty,'product_price'=>$product_price]);
          $msg="Updated";
        }
 
@@ -552,6 +557,7 @@ function checkout()
    {
   
       $checkout['cart_items']=currentUserCartItems();
+   
       if(session()->has('FRONT_LOGIN_USER'))
       {
       $customer_details=DB::table('customers')->where('id',session()->get('FRONT_LOGIN_USER'))->get();
@@ -583,7 +589,7 @@ function checkout()
  // Place Order
  function place_order(Request $r)
  {
-    prx(cartData());
+   
     if(session()->has('FRONT_LOGIN_USER'))
     {
       $uid=session()->get('FRONT_LOGIN_USER');
@@ -608,14 +614,57 @@ function checkout()
           'added_on'=>date('Y-m-d h:i:s'),
           
        ];
-       $data_id=DB::table('orders')->insertGetId($arr);
-       echo $data_id;
+       $order_id=DB::table('orders')->insertGetId($arr);
+       if($order_id > 0)
+       {
+         foreach(cartData() as $list_item)
+         {
+           DB::table('order_details')->insert(['orders_id'=>$order_id,
+           'product_id'=>$list_item->product_id,
+           'product_attr_id'=>$list_item->product_attr_id,
+           'price'=>$list_item->product_price,
+           'qty'=>$list_item->qty,
+            ]);
+         }
+
+         DB::table('cart')->where(['user_id'=>$uid,'user_type'=>'Reg'])->delete();
+         $r->session()->put('order_id'.$order_id,$order_id);
+
+         $status='success';
+         $msg='Order Placed';
+       }
+       else
+       {
+         $status='error';
+         $msg='Please Try again after sometime';
+       }
+      
+     
     }
     else
     {
-
+      $status='false';
+      $msg='Please Login in to place order';
     }
-    prx($r->all());
+    return response()->json(['status'=>$status,'msg'=>$msg]);  
+   //  prx($r->all());
+ }
+
+ function place_order_notification()
+ {
+    $customer_order_detect=DB::table('orders')->where('customer_id',session()->get('FRONT_LOGIN_USER'))->get();
+    if(isset($customer_order_detect[0]))
+    {
+      
+      $customer_order_detect['customer_id']=session()->get('order_id'.$customer_order_detect[0]->id);
+      return view('front.order_placed',$customer_order_detect);
+    }
+    else
+    {
+       return redirect('/');
+    }
+ 
+    
  }
 }
 
